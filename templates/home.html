@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Home</title>
+	</head>
+	<body>			
+		<div align="center">
+			<h1> Cyclone Intensity Estimation </h1>
+			<form action='/' method="post" enctype="multipart/form-data">
+				<input type="file" name="image" accept="image/jpeg">
+				<button type='submit'>Upload Image</button>
+			</form> <hr>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col">
+				{% if data %}
+					<h2> Input </h2>
+					<img src="{{data.path}}" width="300" height="300"/>
+				{% endif %}
+				</div>
+				<div class="col">
+				{% if data %}
+					{% if data.status_code==404 %}
+						<h2> Error </h2>
+						<p> Message: {{data.message}} </p>
+					{% else %}
+						<h2> Prediction Probabilities </h2>
+						<ul>
+							{% for i,p in data['prediction']%}
+								{% if p!=0 %}
+									<li>T{{i+1}} : {{p}}</li>
+								{%endif%}
+							{% endfor %}
+						</ul>
+					{% endif %}	
+				{% endif %}
+				</div>
+			</div> <hr>
+			<div class="row">
+				<div class="col" align="center"><h2>Result: Estimated intensity is: T{{data.result}} </h2></div>
+			</div>
+		</div>
+	</body>
+</html>
