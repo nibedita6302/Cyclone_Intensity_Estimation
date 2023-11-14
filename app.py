@@ -24,7 +24,7 @@ model = tf.keras.models.load_model(r'.\save_cnn_model_1o4_batch=8_lr=0.001\save_
 
 @app.route('/', methods=['GET']) 
 def Hello():
-    return render_template(r'.\home.html')
+    return render_template('home.html')
 
 
 @app.route('/predict', methods=['POST'])
