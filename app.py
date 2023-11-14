@@ -28,7 +28,7 @@ def Hello():
         return render_template('home.html')
         #return {"message": "Hello World", "status_code": 200, "status": "success"}
     except Exception as e:
-        return {"message": "Facing some error :)", "status_code": 400, "status": "error"}
+        return {"message": f"{e})", "status_code": 400, "status": "error"}
 
 
 @app.route('/predict', methods=['POST'])
