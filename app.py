@@ -24,8 +24,9 @@ model = tf.keras.models.load_model(r'.\save_cnn_model_1o4_batch=8_lr=0.001\save_
 
 @app.route('/', methods=['GET']) 
 def Hello():
-    try:
-        return {"message": "Hello World", "status_code": 200, "status": "success"}
+    try:    
+        return render_template('home.html')
+        #return {"message": "Hello World", "status_code": 200, "status": "success"}
     except Exception as e:
         return {"message": "Facing some error :)", "status_code": 400, "status": "error"}
 
@@ -35,7 +36,7 @@ def Predict():
     if 'image' not in request.files:
         return {
             "status": "error",
-            "status_code": 0,
+            "status_code": 404,
             "message": "Upload an image first"
         }
     file = request.files['image']
@@ -43,7 +44,7 @@ def Predict():
         flash('No image selected for uploading')
         return {
             "status": "error",
-            "status_code": 0,
+            "status_code": 404,
             "message": "No image selected for uploading"
         }
 
@@ -63,10 +64,17 @@ def Predict():
         # prediction
         y_pred = model.predict(x_true)
         y_pred_arg = tf.math.argmax(y_pred, axis=-1) ## argmax
-        
         return {
             'y_pred':y_pred,
-            'y_pred_arg':y_pred_arg
+            'y_pred_arg':y_pred_arg,
+            'status_code': 200
+        }
+    
+    else:
+        return {
+            "status": "error",
+            "status_code": 415,
+            "message": "Unsupported Media Type, server cannot process the request body."
         }
 
 
