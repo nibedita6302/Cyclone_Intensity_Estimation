@@ -2,10 +2,9 @@ from flask import Flask, flash, request, redirect, url_for, render_template, sen
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, GlobalAveragePooling2D
 from tensorflow.keras.models import Model, load_model
 import os
+import cv2
 
 
 app = Flask(__name__)
@@ -15,20 +14,20 @@ CORS(app)
 
 UPLOAD_FOLDER = 'upload/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = 'jpg'
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # Load model
-model = tf.keras.models.load_model(f'C:\Cyclone\SAVE_MODEL\save_cnn_model_1o4_batch=8_lr=1e3', compile=False)
+model = tf.keras.models.load_model(r'.\save_cnn_model_1o4_batch=8_lr=0.001\save_cnn_model_1o4_batch=8_lr=0.001', compile=False)
 
 @app.route('/', methods=['GET']) 
 def Hello():
     try:
-        return {"message": "Hello World", "status_code": 1, "status": "success"}
+        return {"message": "Hello World", "status_code": 200, "status": "success"}
     except Exception as e:
-        return {"message": "Facing some error :)", "status_code": 0, "status": "error"}
+        return {"message": "Facing some error :)", "status_code": 400, "status": "error"}
 
 
 @app.route('/predict', methods=['POST'])
@@ -54,16 +53,22 @@ def Predict():
         # Save image 
         savePath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(savePath)
-
+        # Read image
+        img = cv2.imread(savePath)
+        x_true = tf.convert_to_tensor(img, tf.float32)
+        x_true = tf.expand_dims(x_true, axis=0)
+        #print(img.shape)
+        # Normalize image
+        x_true = x_true / 255.0
         # prediction
-        result = model.predict(savePath)
-
-
-        # Now code here :) i don't know what to do :)
-
-
-
+        y_pred = model.predict(x_true)
+        y_pred_arg = tf.math.argmax(y_pred, axis=-1) ## argmax
+        
+        return {
+            'y_pred':y_pred,
+            'y_pred_arg':y_pred_arg
+        }
 
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run(port=8000, debug=True)
