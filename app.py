@@ -25,10 +25,10 @@ model = tf.keras.models.load_model(r'.\save_cnn_model_1o4_batch=8_lr=0.001\save_
 @app.route('/', methods=['GET']) 
 def Hello():
     try:    
-        return render_template('home.html')
+        return render_template('/home.html')
         #return {"message": "Hello World", "status_code": 200, "status": "success"}
     except Exception as e:
-        return {"message": f"{e})", "status_code": 400, "status": "error"}
+        return {"message": f"{e}", "status_code": 400, "status": "error"}
 
 
 @app.route('/predict', methods=['POST'])
