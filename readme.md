@@ -23,8 +23,3 @@
 ```bash
     python app.py
 ```
-OR
-
-```bash
-    python3 app.py
-```
