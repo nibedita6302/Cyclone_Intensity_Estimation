@@ -17,3 +17,14 @@
 ```bash
     pip install -r requirements. txt
 ```
+
+- Run app.py
+
+```bash
+    python app.py
+```
+OR
+
+```bash
+    python3 app.py
+```
