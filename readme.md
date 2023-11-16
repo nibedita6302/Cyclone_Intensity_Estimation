@@ -15,5 +15,11 @@
 - Install Flask
 
 ```bash
-    pip install Flask
+    pip install -r requirements. txt
+```
+
+- Run app.py
+
+```bash
+    python app.py
 ```
