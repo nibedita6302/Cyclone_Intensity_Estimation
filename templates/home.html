@@ -14,9 +14,9 @@
 			</form> <hr>
 		</div>
 		<div class="container">
+		{% if data %}
 			<div class="row">
 				<div class="col">
-				{% if data %}
 					<h2> Input </h2>
 					<img src="{{data.path}}" width="300" height="300"/>
 				{% endif %}
@@ -36,12 +36,12 @@
 							{% endfor %}
 						</ul>
 					{% endif %}	
-				{% endif %}
 				</div>
 			</div> <hr>
 			<div class="row">
 				<div class="col" align="center"><h2>Result: Estimated intensity is: T{{data.result}} </h2></div>
 			</div>
+		{% endif %}
 		</div>
 	</body>
 </html>
