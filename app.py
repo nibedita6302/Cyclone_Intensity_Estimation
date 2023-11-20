@@ -1,19 +1,18 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for
-from flask_cors import CORS
-from werkzeug.utils import secure_filename
-import tensorflow as tf
 import os
+from werkzeug.utils import secure_filename
 import cv2
-
+from flask_cors import CORS
+from flask import Flask, jsonify, request, render_template, redirect, url_for
+import tensorflow as tf
 
 app = Flask(__name__)
 app.debug = True
 CORS(app)
+app.config['UPLOAD_FOLDER'] = 'upload/'
 app.config['STATIC_FOLDER'] = "static/"
 ALLOWED_EXTENSIONS = ['jpeg']
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 # Load model
 model = tf.keras.models.load_model(r'.\save_cnn_model_1o4_batch=8_lr=0.001\save_cnn_model_1o4_batch=8_lr=0.001', compile=False)
@@ -39,9 +38,9 @@ def Hello():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             # Save image 
-            savePath = os.path.join(app.config['STATIC_FOLDER'], filename)
+            savePath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(savePath)
-            return redirect(url_for('Predict', path=savePath))
+            return redirect(url_for('PredictIntensity', path=savePath))
         else:
             data = jsonify({
                 "status": "error",
@@ -50,13 +49,13 @@ def Hello():
             })
             return render_template('home.html', data=data)
     return render_template('home.html')
-
-
-@app.route('/predict', methods=['GET', 'POST'])
-def Predict():
-    path = request.args.get('path')
+    
+@app.route('/predict-intensity', methods=['GET', 'POST'])
+def PredictIntensity():
+    path = request.args.get("path")
     # Read image
     img = cv2.imread(path)
+    img = cv2.resize(img, (128,128))
     x_true = tf.convert_to_tensor(img, tf.float32)
     x_true = tf.expand_dims(x_true, axis=0)
     # Normalize image
